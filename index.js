@@ -21,10 +21,15 @@ const limiter = rateLimit({
 });
 app.use('/api/', limiter);
 
-// CORS configuration
+// ✅ Updated CORS configuration
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:3000',
-  credentials: true
+  origin: [
+    'https://tenantflow1.netlify.app', // ✅ Correct deployed frontend URL
+    'http://localhost:3000'            // For local development
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 // Body parsing middleware
@@ -52,9 +57,12 @@ app.get('/api/health', (req, res) => {
     uptime: process.uptime()
   });
 });
+
+// Root endpoint
 app.get('/', (req, res) => {
-  res.send('✅ TenantFlow backend is live!');
+  res.send('✅ TenantFlow backend is live and connected to Netlify frontend!');
 });
+
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
@@ -69,6 +77,8 @@ app.use('*', (req, res) => {
   res.status(404).json({ error: 'Route not found' });
 });
 
-app.listen(PORT);
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+});
 
 module.exports = app;
