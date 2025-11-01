@@ -52,7 +52,9 @@ app.get('/api/health', (req, res) => {
     uptime: process.uptime()
   });
 });
-
+app.get('/', (req, res) => {
+  res.send('✅ TenantFlow backend is live!');
+});
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
